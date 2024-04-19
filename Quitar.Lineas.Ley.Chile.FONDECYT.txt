@@ -6,8 +6,6 @@
 
 "- documento generado el"
 
-"página"
-
 "Fecha Publicación:"
 
 "Fecha Promulgación:"
