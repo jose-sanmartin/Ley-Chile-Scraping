@@ -1,16 +1,13 @@
 #Quitar las siguientes lineas en las leyes
 
-"Biblioteca del Congreso Nacional de Chile - "
-
-"www.leychile.cl"
-
-"- documento generado el"
-
-"Fecha Publicación:"
-
-"Fecha Promulgación:"
-
-"Tipo Versión: Única De : "
-
-"Url Corta: https://bcn.cl/"
+"Biblioteca del Congreso Nacional de Chile - ",
+"www.leychile.cl",
+"- documento generado el",
+"Fecha Publicación:",
+"Fecha Promulgación:",
+"Tipo Versión: Única De : ",
+"Url Corta: https://bcn.cl/",
+"Publicación: ",
+"Promulgación: ",
+"Versión: Única De : ",
 
