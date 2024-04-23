@@ -1,42 +1,32 @@
 import pandas as pd
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
-import time
+import requests
+from lxml import etree
 
-df = pd.read_excel('.xlsx')
+# Asegúrate de que el archivo Excel está en el mismo directorio que este script o proporciona la ruta completa
+archivo_excel = 'G:\\Mi unidad\\Ayudantia investigación Jose San Martin (P. Figu)\\DATOS Fondecyt 11230342\\1. Normas (Leyes y DFL)\\7. Metadatos Emiliano Figueroa Larraín.xlsx'
+df = pd.read_excel(archivo_excel)
 
-service = Service(executable_path=ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service)
+# Definir la URL base
+base_url = "https://www.leychile.cl/Consulta/obtxml?opt=7&idNorma="
 
-urls_fallidas = []
+# Definir el espacio de nombres
+ns = {'default': 'http://www.leychile.cl/esquemas'}
 
-def esperar_descarga(driver, selector, timeout=10):
-    """Espera hasta que el botón de descarga sea clickeable o hasta que el timeout expire"""
-    for i in range(timeout):
-        try:
-            download_button = driver.find_element(By.CSS_SELECTOR, selector)
-            if download_button:
-                download_button.click()
-                return True
-        except:
-            time.sleep(2)
-    return False
+def obtener_texto_norma(id_norma):
+    url = base_url + str(id_norma)
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        tree = etree.fromstring(response.content)
+        textos = tree.xpath('//default:EstructuraFuncional/default:Texto', namespaces=ns)
+        textos_concatenados = ' '.join([texto.text for texto in textos if texto.text is not None])
+        return textos_concatenados
+    except Exception as e:
+        return "Error: " + str(e)
 
-for url in df['Url']:
-    if pd.notna(url):
-        try:
-            driver.get(url)
-            success = esperar_descarga(driver, "a.btn.btn-flat.btn-h[rel='noopener'][target='_blank'][title='Descargar PDF de esta norma']")
-            if not success:
-                raise Exception("Botón de descarga no encontrado")
-        except Exception as e:
-            print(f"No se encontró el botón de descarga para la URL {url}: {e}")
-            urls_fallidas.append(url)
+# Aplicar la función a cada ID de norma y guardar los resultados en una nueva columna
+df['Texto de la Norma'] = df['Identificación de la Norma'].apply(obtener_texto_norma)
 
-with open('urls_fallidas.txt', 'w') as file:
-    for url in urls_fallidas:
-        file.write(url + '\n')
+# Guardar el DataFrame actualizado en un nuevo archivo Excel
+df.to_excel('G:\\Mi unidad\\Ayudantia investigación Jose San Martin (P. Figu)\\DATOS Fondecyt 11230342\\1. Normas (Leyes y DFL)\\normas_actualizadas.xlsx', index=False)
 
-driver.quit()
