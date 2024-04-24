@@ -3,7 +3,7 @@ import requests
 from lxml import etree
 
 # Asegúrate de que el archivo Excel está en el mismo directorio que este script o proporciona la ruta completa
-archivo_excel = 'G:\\Mi unidad\\Ayudantia investigación Jose San Martin (P. Figu)\\DATOS Fondecyt 11230342\\1. Normas (Leyes y DFL)\\7. Metadatos Emiliano Figueroa Larraín.xlsx'
+archivo_excel = 'source_id_file.xlsx'
 df = pd.read_excel(archivo_excel)
 
 # Definir la URL base
@@ -27,6 +27,7 @@ def obtener_texto_norma(id_norma):
 # Aplicar la función a cada ID de norma y guardar los resultados en una nueva columna
 df['Texto de la Norma'] = df['Identificación de la Norma'].apply(obtener_texto_norma)
 
-# Guardar el DataFrame actualizado en un nuevo archivo Excel
-df.to_excel('G:\\Mi unidad\\Ayudantia investigación Jose San Martin (P. Figu)\\DATOS Fondecyt 11230342\\1. Normas (Leyes y DFL)\\normas_actualizadas.xlsx', index=False)
+# Guardar el DataFrame actualizado en un nuevo archivo CSV
+csv_file_path = 'file.csv'
+df.to_csv(csv_file_path, index=False, encoding='utf-8', sep="~")
 
